@@ -1,16 +1,16 @@
 import requests as req 
 
 'essa é a minha chave de acesso à API'
-api_key = '29a71837'
+api_key = 'fd2ee97e'
 
 '''essa é a mesma funçao do arquivo 01, mas agora vamos fazer alterações nela'''
-
 
 def pega_filme_por_id(film_id):
   url = "http://www.omdbapi.com/?apikey={}&i={}".format(api_key, film_id)
   retorno = req.get(url).json()
   print(url)
-
+  if retorno['Response']=='False':
+    return "ID inválida"
 
   dadosFilme = {
           'film_id': film_id,
@@ -18,6 +18,7 @@ def pega_filme_por_id(film_id):
           'ano': retorno['Year'],
           'diretor': retorno['Director'],
           'genero': retorno['Genre'],
+          'poster': retorno['Poster'],
           }
           
   return (dadosFilme)
