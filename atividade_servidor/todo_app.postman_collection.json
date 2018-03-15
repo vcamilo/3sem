@@ -1,0 +1,294 @@
+{
+	"info": {
+		"name": "todo app",
+		"_postman_id": "faf7c806-c5b3-4c72-8500-a95ad8770eca",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "tarefa por id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"done\": false\n}"
+				},
+				"url": {
+					"raw": "http://0.0.0.0:5000/todo/api/v1.0/tasks/2",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "5000",
+					"path": [
+						"todo",
+						"api",
+						"v1.0",
+						"tasks",
+						"2"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "tarefa inexistente",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://0.0.0.0:5000/todo/api/v1.0/tasks/200",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "5000",
+					"path": [
+						"todo",
+						"api",
+						"v1.0",
+						"tasks",
+						"200"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "todas as tarefas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://0.0.0.0:5000/todo/api/v1.0/tasks",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "5000",
+					"path": [
+						"todo",
+						"api",
+						"v1.0",
+						"tasks"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "criar tarefa",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"description\": \"Usando o metodo POST e a mesma URL da lista\",\n        \"done\": true,\n        \"id\": 1,\n        \"title\": \"Criar a função de adicionar tarefas\"\n    }"
+				},
+				"url": {
+					"raw": "http://0.0.0.0:5000/todo/api/v1.0/tasks",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "5000",
+					"path": [
+						"todo",
+						"api",
+						"v1.0",
+						"tasks"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update tarefa",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"done\": false\n}"
+				},
+				"url": {
+					"raw": "http://0.0.0.0:5000/todo/api/v1.0/tasks/2",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "5000",
+					"path": [
+						"todo",
+						"api",
+						"v1.0",
+						"tasks",
+						"2"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete tarefa",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://0.0.0.0:5000/todo/api/v1.0/tasks/5",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "5000",
+					"path": [
+						"todo",
+						"api",
+						"v1.0",
+						"tasks",
+						"5"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "busca tarefa",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://0.0.0.0:5000/todo/api/v1.0/tasks/search?query=Leite",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "5000",
+					"path": [
+						"todo",
+						"api",
+						"v1.0",
+						"tasks",
+						"search"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "Leite",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "prioridade maxima",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://0.0.0.0:5000/todo/api/v1.0/tasks/highest",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "5000",
+					"path": [
+						"todo",
+						"api",
+						"v1.0",
+						"tasks",
+						"highest"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "tarefa mais antiga",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://0.0.0.0:5000/todo/api/v1.0/tasks/oldest",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "5000",
+					"path": [
+						"todo",
+						"api",
+						"v1.0",
+						"tasks",
+						"oldest"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
