@@ -115,6 +115,12 @@ def delete_task(task_id):
 ela deve retornar erro se a tarefa não existir
 
 '''
+@app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+        for task in tasks:
+                if task['id'] == task_id:
+                        tasks.remove(0)
+        return "Item deletado"
 
 
 '''
