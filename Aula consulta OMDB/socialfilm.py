@@ -120,7 +120,13 @@ def put_review(film_id,user_id):
                 if film_id == review['film_id'] and user_id == review['user_id']:
                         review['comment'] = request.json.get('comment', review['comment'])
                         return jsonify({'Comentario':review})
-                
+                review = {
+                        'film_id': request.json.get('film_id', " "),
+                        'user_id': request.json.get('user_id', " "),
+                        'comment': request.json.get('comment', " "),
+                        }
+                reviews.append(review)
+                return jsonify({'Comentario':'Comentario'}) #arrumar isso
         
 '''
 Va ao arquivo acesso_omdb.py e crie a funcao existe_id
