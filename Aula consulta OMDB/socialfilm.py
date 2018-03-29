@@ -115,7 +115,13 @@ Adicionar um comentario:
 '''
 @app.route('/socialfilm/reviews/<film_id>/<user_id>', methods=['PUT'])
 def put_review(film_id,user_id):
-   return 'ola2'
+        get_rev = get_review(film_id, user_id)
+        for review in reviews:
+                if film_id == review['film_id'] and user_id == review['user_id']:
+                        review['comment'] = request.json.get('comment', review['comment'])
+                        return jsonify({'Comentario':review})
+                
+        
 '''
 Va ao arquivo acesso_omdb.py e crie a funcao existe_id
 
