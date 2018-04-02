@@ -249,14 +249,20 @@ Note que já fizemos algo muito parecido na atividade do OMDB
 
 @app.route('/socialfilm/search', methods=['GET'])
 def busca_filme():
-        termo_busca = request.args.get('buscar', None)
-        return termo_busca
+        termo_busca = request.args.get('busca', None)
+        if (termo_busca == None):
+                return jsonify({'error':'Busca mal formada'}),400
+        retorno = acesso_omdb.pega_filme_por_nome(termo_busca)
+        for filme in retorno['imdbID']:
+                pass
+                
+        return jsonify({"filmes": retorno[:10]})
 
 '''
 Trate erro da funcao de busca: se por acaso ela nao contiver o termo da busca, retorne
 'busca mal formada' e o codigo 400
 '''
-
+#feito no exercício acima
 '''
 Adicione review a nossa funcao de busca.
 
