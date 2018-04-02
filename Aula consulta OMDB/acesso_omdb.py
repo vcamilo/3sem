@@ -50,7 +50,10 @@ Alias, se a id nao existir, retorne 'id nao encontrada'
 '''
 
 def pega_nome(id_omdb):
-    return 'id nao encontrada'
+    url = "http://www.omdbapi.com/?apikey={}&i={}".format(chave_omdb, id_omdb)
+    retorno = req.get(url).json()
+    dic_ret = {}
+    return {'name': retorno['Title']}, {'film_id': id_omdb}
 
 '''
 relacionados, no formato

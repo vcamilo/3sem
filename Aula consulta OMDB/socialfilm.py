@@ -39,6 +39,11 @@ notas = [
         'film_id': 'tt1211837',
         'user_id': 'lucio',
         'stars': 2
+    },
+    {
+        'film_id': 'tt1211867',
+        'user_id': 'lucio',
+        'stars': 0
     }
 ]
 
@@ -65,7 +70,7 @@ Ela imprime tudo que esta guardado no servidor
 '''
 @app.route('/socialfilm/all/', methods=['GET'])
 def tudo():
-    return jsonify({'reviews':reviews,'notas':notas})
+        return jsonify({'reviews':reviews,'notas':notas})
 
 
 '''
@@ -117,6 +122,8 @@ Adicionar um comentario:
 def put_review(film_id,user_id):
         get_rev = get_review(film_id, user_id)
         for review in reviews:
+                if acesso_omdb.existe_id(film_id) == False:
+                    return jsonify({'Error': 'Filme inexistente'}), 400
                 if film_id == review['film_id'] and user_id == review['user_id']:
                         review['comment'] = request.json.get('comment', review['comment'])
                         return jsonify({'Comentario':review})
@@ -126,7 +133,7 @@ def put_review(film_id,user_id):
                         'comment': request.json.get('comment', " "),
                         }
                 reviews.append(review)
-                return jsonify({'Comentario':'Comentario'}) #arrumar isso
+                return jsonify({'Comentario': review})
         
 '''
 Va ao arquivo acesso_omdb.py e crie a funcao existe_id
@@ -139,6 +146,9 @@ Para acessar a funcao, basta usar acesso_omdb.existe_id(sua_id)
 Pergunta interessante: o retorno de existe_id está sendo 'True' (uma string)
 ou True (um booleano)?
 '''
+#Resposta: O retorno é booleano
+
+#Alteracoes realizadas na funcao put_review, conforme solicitado.
 
 '''
 quando acessarmos a url /socialfilm/reviews/all_films/<user_id> com o metodo GET,
@@ -146,7 +156,16 @@ devemos receber todas as reviews feitas pelo usuario
 '''
 @app.route('/socialfilm/reviews/all_films/<user_id>', methods=['GET'])
 def all_reviews(user_id):
-  return 'ola3'
+    comments = {}
+    movies = []
+    for review in reviews:
+        if review['user_id'] == user_id:
+            comments['Comentario'] = review['comment']
+            comments['ID'] = review['film_id']
+            film_title = acesso_omdb.pega_nome(comments['ID'])
+            comments['Titulos'] = film_title[0]['name'] 
+            print(film_title)
+    return jsonify({'Comentarios do usuario': comments})
 
 '''
 Vamos adicionar o nome do filme na resposta anterior.
@@ -161,7 +180,7 @@ Verifique que o vetor reviews nao esta recebendo esses nomes
 
 Voce talvez queira aprender a copiar dicionarios em python
 '''
-
+#Feito no exercicio acima
 '''
 Agora, façamos a parte das estrelas:
     /socialfilm/stars/film_id/user_id deve poder receber GET (para lermos quantas 
@@ -173,7 +192,18 @@ Agora, façamos a parte das estrelas:
 '''
 @app.route('/socialfilm/stars/<film_id>/<user_id>', methods=['GET'])
 def retorna_estrelas(film_id,user_id):
-    return 'estrelas'
+        if not acesso_omdb.existe_id(film_id):
+                return jsonify({'Error': 'Filme inexistente'}), 400
+        existe_user = "Usuario inexistente"
+        filmes = {}
+        for nota in notas:
+                if nota['film_id'] == film_id and nota['user_id'] == user_id:
+                        filmes['film_id'] = film_id
+                        filmes['nota'] = nota['stars']
+                        existe_user = nota['user_id']
+        if existe_user == "Usuario inexistente":
+                return jsonify({"Error": "Usuario inexistente"}), 400                        
+        return jsonify({filmes['film_id']: filmes['nota']})
 
 @app.route('/socialfilm/stars/<film_id>/<user_id>', methods=['PUT'])
 def add_estrelas(film_id,user_id):
@@ -189,7 +219,17 @@ ou 'nao avaliado' se nenhum usuário avaliou o filme ainda
 '''
 @app.route('/socialfilm/stars/<film_id>/average', methods=['GET'])
 def retorna_media(film_id):
-    return '12'
+        if not acesso_omdb.existe_id(film_id):
+                return jsonify({'Error': 'Filme inexistente'}), 400
+        total = 0
+        qtd_filmes = 0
+        for filme in notas:
+                if filme['film_id'] == film_id:
+                        total += filme['stars']
+                        qtd_filmes += 1
+                if qtd_filmes == 0:
+                        return jsonify({'average_stars': 'Nao avaliado'}), 200
+        return jsonify({'average_stars': total/qtd_filmes})
 
 '''
 Vamos implementar uma funcao de busca. Ela recebe uma string,
