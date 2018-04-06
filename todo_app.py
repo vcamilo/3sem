@@ -16,6 +16,12 @@ tasks_iniciais = [
         'title': u'Aprender flask',
         'description': u'http://flask.pocoo.org/docs/0.12/', 
         'done': False
+    },
+    {
+        'id': 3,
+        'title': u'Estudar agricultura',
+        'description': u'Aprender sobre queijos, pizzas e frutas', 
+        'done': False
     }
 ]
 
@@ -146,7 +152,28 @@ def search_text():
     query = request.args.get('query',None)
     return 12
 '''
-
+@app.route('/todo/api/v1.0/tasks/search', methods=['GET'])
+def search_text():
+        #pega a query da url, se houver. Se nao, retorna None
+        query = request.args.get('query',None)
+        lista_aux = []
+        lista = []
+        dic_aux = {}
+        if query == None or query == '':
+                return make_response(jsonify({'Erro': 'Campo da busca nao inserido'}))
+        query = query.upper()
+        for title in tasks:
+                if title['title'].upper().find(query) != -1:
+                        lista_aux.append(title)
+        for desc in tasks:
+                if desc['description'].upper().find(query) != -1:
+                        lista_aux.append(desc)
+        if lista_aux == []:
+                return make_response(jsonify({'Busca concluida': 'Sua busca nao obteve resultados'}), 200)
+        for item in lista_aux:
+                lista.append(insere_url(item))
+         
+        return jsonify({'Tarefas encontradas': lista})
 
 
 '''
