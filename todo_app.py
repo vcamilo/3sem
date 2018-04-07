@@ -98,7 +98,7 @@ def create_task():
     }
     tasks.append(task)
     '''201 é o codigo http para "recurso criado"'''
-    return jsonify({'task': task}), 201
+    return make_response(jsonify({'task': task}), 201)
 ''' 
 se quiser, de uma olhada em
 https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success
@@ -122,7 +122,7 @@ def update_task(task_id):
                 if tarefa['id'] == task_id:
                         for chave in request.json:
                                 tarefa[chave] = request.json[chave]
-                        return jsonify({'Tarefa': insere_url(tarefa)})
+                        return make_response(jsonify({'Tarefa': insere_url(tarefa)}))
 
 '''crie uma funcao delete_task, que deleta uma tarefa
 
@@ -155,12 +155,12 @@ def search_text():
 @app.route('/todo/api/v1.0/tasks/search', methods=['GET'])
 def search_text():
         #pega a query da url, se houver. Se nao, retorna None
-        query = request.args.get('query',None)
+        query = request.args.get('query', None)
         lista_aux = []
         lista = []
         dic_aux = {}
         if query == None or query == '':
-                return make_response(jsonify({'Erro': 'Campo da busca nao inserido'}))
+                return make_response(jsonify({'Erro': 'Busca mal formada. Campo da busca nao inserido'}), 400)
         query = query.upper()
         for title in tasks:
                 if title['title'].upper().find(query) != -1:
@@ -173,7 +173,7 @@ def search_text():
         for item in lista_aux:
                 lista.append(insere_url(item))
          
-        return jsonify({'Tarefas encontradas': lista})
+        return make_response(jsonify({'Tarefas encontradas': lista}), 200)
 
 
 '''
