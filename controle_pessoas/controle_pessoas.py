@@ -189,21 +189,14 @@ def get_disciplina_busca():
         busca = request.args.get('busca')
         disc = []
         if busca == None or busca == "":
-                return make_response(jsonify({'bad request': 'insira o campo de busca'}), 400)
+                return make_response(jsonify({'bad request': 'insira o campo de busca', 'response': True}), 400)
         for disciplina in disciplinas:
                 if disciplina['nome'].find(busca) != -1:
                         disc.append(disciplina)                        
         if disc == []:
                 return make_response(jsonify({'busca': 'sua busca não obteve resultados', 'response': False}), 200)
         retorno = list(disc)
-        for materias in retorno:
-                retorno[0]['url'] = url_for('get_disciplina_busca')
-                retorno[0]['url'] += str(disc[0]['id_disciplina'])
-                retorno[0].pop('id_disciplina', None)
-        
-        #corrige isso
-        
-        return make_response(jsonify({'busca':retorno, 'response': True}), 200)
+        return make_response(jsonify({'busca':disc, 'response': True}), 200)
         
 
 '''
@@ -221,7 +214,26 @@ Ela deve nao adicionar um aluno mais de uma vez (teste via POSTMAN!)
 '''
 @app.route('/disciplina/<int:id_disciplina>/adiciona_aluno', methods=['PUT'])
 def add_aluno(id_disciplina):
-    return str(request.json['id_aluno'])
+        aluno = request.json
+        existe = False
+
+        #bloco de validacao para verificar se o aluno existe 
+        for al in alunos:
+                if aluno['id_aluno'] == al['id_aluno']:
+                        existe = True
+        if existe != True:
+                return make_response(jsonify({'bad request': 'aluno não existente', 'response': False}), 404)
+        
+        #blococ de iteracao no dict disciplina
+        for dici in disciplinas:
+                if dici['id_disciplina'] == id_disciplina:
+                        percorrer = dici
+        if aluno['id_aluno'] in percorrer['alunos']:
+                return make_response(jsonify({'bad request': 'aluno já matriculado', 'response': False}), 400)
+        percorrer['alunos'].append(aluno['id_aluno'])
+        return make_response(jsonify({'Resultado': percorrer, 'response': True}), 201)
+                
+
 
 
 
