@@ -12,6 +12,11 @@ professores = [
 alunos = [
         {'nome':"alexandre", 'id_aluno':1},
         {'nome':"miguel", 'id_aluno':2},
+        {'nome':"paulo", 'id_aluno':3},
+        {'nome':"pedro", 'id_aluno':4},
+        {'nome':"henrique", 'id_aluno':5},
+        {'nome':"mauro", 'id_aluno':6},
+        {'nome':"arthur", 'id_aluno':7},
         ]
 
 disciplinas = [
@@ -100,17 +105,21 @@ def create_professor():
     '''201 é o codigo http para "recurso criado"'''
     print(request.json)
     if request.json == {}:
-            return 'ERRADO DEMAIS'
+            return make_response(jsonify({'Error': 'nome nao enviado', 'Response': False}),400)
     if request.json['nome'] == "":
-            return make_response(jsonify({'Error': 'Corpo mal formado'}),400)
+            return make_response(jsonify({'Error': 'corpo mal formado', 'Response': False}),400)
  
     professor = {
             'nome': request.json['nome'],
             'id_professor': professores[-1]['id_professor'] + 1
             }
     professores.append(professor)
-    
-    return make_response(jsonify({'resultado': professores[-1]}), 201)
+    retorno = dict(professor)
+    retorno.pop('id_professor', None)
+    retorno['url'] = url_for('create_professor')
+    retorno['url'] += str(professor['id_professor'])
+
+    return make_response(jsonify({'professor': retorno, 'response': True}), 201)
 
 '''
 Façamos agora a consulta de aluno por ID, nos mesmos moldes da consulta do professor
@@ -121,7 +130,14 @@ o objeto armazenado
 '''
 @app.route('/aluno/<int:id_aluno>', methods=['GET'])
 def get_aluno_completa(id_aluno):
-    return resposta
+        for aluno in alunos:
+                if aluno['id_aluno'] == id_aluno:
+                        retorno = {
+                                'nome': aluno['nome'],
+                                'url': url_for('get_aluno_completa',id_aluno=aluno['id_aluno'])
+                                }
+                        return make_response(jsonify({'aluno': retorno, 'response': True}), 200)
+        return make_response(jsonify({'erro': 'aluno não encontrado', 'response': False}), 400)
 
 '''
 Façamos agora a consulta de disciplina por ID, nos mesmos moldes da consulta do professor
@@ -129,10 +145,23 @@ Façamos agora a consulta de disciplina por ID, nos mesmos moldes da consulta do
 Atenção ao encapsulamento da resposta, 
 e nao esqueca de adicionar a URL na resposta sem afetar 
 o objeto armazenado
+
+{'nome':"distribuidos", 'id_disciplina':1, 'alunos':[1,2], 'professores':[1], 'publica': 'False'},
+
 '''
 @app.route('/disciplina/<int:id_disciplina>', methods=['GET'])
 def get_disciplina_completa(id_disciplina):
-    return resposta
+        for disciplina in disciplinas:
+                if disciplina['id_disciplina'] == id_disciplina:
+                        retorno = {
+                                'nome': disciplina['nome'],
+                                'url': url_for('get_disciplina_completa', id_disciplina=disciplina['id_disciplina']),
+                                'alunos': disciplina['alunos'],
+                                'professores': disciplina['professores'],
+                                'publiaa': disciplina['publica']
+                                }
+                        return make_response(jsonify({'disciplina': retorno, 'response': True}), 200)
+        return make_response(jsonify({'erro': 'disciplina não encontrada', 'response': False}), 400)
 
 '''
 Façamos agora uma consulta de disciplina por nome, recebendo 
@@ -157,7 +186,25 @@ Se deu tudo certo, a resposta deve ser da forma:
 '''
 @app.route('/disciplina/busca/', methods=['GET'])
 def get_disciplina_busca():
-    return retorno
+        busca = request.args.get('busca')
+        disc = []
+        if busca == None or busca == "":
+                return make_response(jsonify({'bad request': 'insira o campo de busca'}), 400)
+        for disciplina in disciplinas:
+                if disciplina['nome'].find(busca) != -1:
+                        disc.append(disciplina)                        
+        if disc == []:
+                return make_response(jsonify({'busca': 'sua busca não obteve resultados', 'response': False}), 200)
+        retorno = list(disc)
+        for materias in retorno:
+                retorno[0]['url'] = url_for('get_disciplina_busca')
+                retorno[0]['url'] += str(disc[0]['id_disciplina'])
+                retorno[0].pop('id_disciplina', None)
+        
+        #corrige isso
+        
+        return make_response(jsonify({'busca':retorno, 'response': True}), 200)
+        
 
 '''
 A proxima funcao nao tem runtests implementado :(
