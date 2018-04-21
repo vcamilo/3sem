@@ -52,14 +52,14 @@ E
 
 Cuidado para nao alternar a atividade 'no banco'!
 '''
-@app.route('/atividade/<int:id_atividade>/')
-def atividade(id_atividade):
-        for atividade in atividades:
-                if id_atividade == atividade['id_atividade']:
-                        retorno = dict(atividade)
-                        retorno['url'] = url_for('atividade', id_atividade=retorno['id_atividade'])
-                        return make_response(jsonify({'response': 'True', 'atividade': retorno}), 200)
-                return make_response(jsonify({'response': 'False', 'erro': 'atividade nao encontrada'}))
+##@app.route('/atividade/<int:id_atividade>/')
+##def atividade(id_atividade):
+##        for atividade in atividades:
+##                if id_atividade == atividade['id_atividade']:
+##                        retorno = dict(atividade)
+##                        retorno['url'] = url_for('atividade', id_atividade=retorno['id_atividade'])
+##                        return make_response(jsonify({'response': 'True', 'atividade': retorno}), 200)
+##                return make_response(jsonify({'response': 'False', 'erro': 'atividade nao encontrada'}), 400)
 
 '''
 Agora, vamos alterar o comportamento da URL anterior.
@@ -70,13 +70,41 @@ for um professor da disciplina. Caso contrario, deve suprimir
 as respostas
 '''
 
+#O código acima foi comentado e reformulado abaixo
+
+@app.route('/atividade/<int:id_atividade>/')
+def atividade(id_atividade):
+        id_professor = request.args.get('id_professor')
+        for atividade in atividades:
+                if id_atividade == atividade['id_atividade']:
+                        try:
+                                retorno_leciona = acesso.leciona(id_professor, atividade['id_disciplina'])
+                                if retorno_leciona['response'] == False:
+                                        return jsonify({'erro': 'ID de professor inválido', 'response': False})
+                                if retorno_leciona['leciona']:
+                                        retorno = dict(atividade)
+                                        retorno['url'] = url_for('atividade', id_atividade=retorno['id_atividade'])
+                                        return make_response(jsonify({'response': True, 'atividade': retorno}), 200)
+                                else:
+                                        retorno = dict(atividade)
+                                        del retorno['respostas']
+                                        retorno['url'] = url_for('atividade', id_atividade=retorno['id_atividade'])
+                                        return jsonify({'response': True, 'atividade': retorno}), 200
+                        except:
+                                return jsonify({'error': 'erro interno do servidor', 'response': False}), 500
+        return make_response(jsonify({'response': False, 'erro': 'atividade nao encontrada'}), 400)
+
+
 '''
 Desafio: o que acontece com a sua funcao de atividades quando 
 o servidor de pessoas esta caido?
-
+'''
+#O servidor sistema_atividades retornará um erro 500, indicando ao usuário que houve um erro interno do servidor
+'''
 Seria conveniente que o sistema automaticamente considerasse
 o professor inválido. Faça isso!
 '''
+#Feito!
 
 
 if __name__ == '__main__':

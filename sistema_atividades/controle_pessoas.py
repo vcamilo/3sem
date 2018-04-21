@@ -94,14 +94,18 @@ e o codigo de status 404
 '''
 @app.route('/leciona/<int:id_professor>/<int:id_disciplina>/', methods=['GET'])
 def leciona(id_professor,id_disciplina):
-    for disciplina in disciplinas:
-        if id_disciplina == disciplina['id_disciplina']:
-            if id_professor in disciplina['professores']:
-                retorno = jsonify({'leciona': True,'response': True})
-                return make_response(retorno), 200
-            else:
-                make_response(jsonify({'response': True, 'leciona': False}))
-    return make_response(jsonify({'error':'professor ou disciplina nao encontradas', 'response': False}),400)
+    for professor in professores:
+            if id_professor == professor['id_professor']:
+                    for disciplina in disciplinas:
+                        if id_disciplina == disciplina['id_disciplina']:
+                            if id_professor not in disciplina['professores']:
+                                return jsonify({'response': True, 'leciona': False})
+                            if id_professor in disciplina['professores']:
+                                retorno = jsonify({'leciona': True,'response': True})
+                                return make_response(retorno), 200
+                            else:
+                                make_response(jsonify({'response': True, 'leciona': False}))
+    return jsonify({'response': False, 'leciona': False})
 
 '''
 Agora, vá para o arquivo acesso.py

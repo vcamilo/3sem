@@ -13,8 +13,8 @@ def leciona(id_professor, id_disciplina):
     url = "http://localhost:5000/leciona/{}/{}".format(id_professor, id_disciplina)
     retorno = req.get(url).json()
     if retorno['response']:
-        return True
-    return False
+        return retorno
+    return retorno
     
 
 '''
