@@ -31,6 +31,9 @@ e (False,'inexistente') se a disciplina nao existe
 
 
 def eh_aluno(id_aluno, id_disciplina):
+    r = requests.get('http://localhost:5000/aluno_de_disciplina/{}/{}'.format(id_aluno, id_disciplina))
+    if 'aluno' in r.json():
+        return r.json()['aluno'] == 'True'
     return False,'inexistente'
 
 

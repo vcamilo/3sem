@@ -77,6 +77,33 @@ def get_professor_completa(id_professor):
     return resposta,404
 
 '''
+Crie uma URL /aluno_de_disciplina/<int:id_aluno>/<int:id_disciplina>
+
+Ela deve retornar se um professor leciona ou nao uma determinada disciplina
+
+Se ele leciona, o retorno deve ser
+{'response':'True', 'aluno':'True'}
+
+Caso contrario,
+{'response':'True', 'aluno':'False'}
+
+Se a disciplina nao for encontrada, retorne
+{'response':'False', 'error':'disciplina nao encontrada'}
+
+e o codigo de status 404
+'''
+
+@app.route('/aluno_de_disciplina/<int:id_aluno>/<int:id_disciplina>/', methods=['GET'])
+def estuda(id_aluno,id_disciplina):
+    for disciplina in disciplinas:
+        if (id_disciplina == disciplina['id_disciplina']):
+            if id_aluno in disciplina['alunos']:
+                return jsonify({'response':'True', 'aluno':'True'})
+            else:
+                return jsonify({'response':'True', 'aluno':'False'})
+    return jsonify({'response':'False', 'error':'disciplina nao encontrada'}),404
+
+'''
 (ja feito na aula passada)
 Crie uma URL /leciona/<int:id_professor>/<int:id_disciplina>
 
@@ -93,6 +120,7 @@ Se a disciplina nao for encontrada, retorne
 
 e o codigo de status 404
 '''
+
 @app.route('/leciona/<int:id_professor>/<int:id_disciplina>/', methods=['GET'])
 def leciona(id_professor,id_disciplina):
     for disciplina in disciplinas:
@@ -102,27 +130,6 @@ def leciona(id_professor,id_disciplina):
             else:
                 return jsonify({'response':'True', 'leciona':'False'})
     return jsonify({'response':'False', 'error':'disciplina nao encontrada'}),404
-
-
-'''
-Crie uma URL /aluno_de_disciplina/<int:id_aluno>/<int:id_disciplina>
-
-Ela deve retornar se um professor leciona ou nao uma determinada disciplina
-
-Se ele leciona, o retorno deve ser
-{'response':'True', 'aluno':'True'}
-
-Caso contrario,
-{'response':'True', 'aluno':'False'}
-
-Se a disciplina nao for encontrada, retorne
-{'response':'False', 'error':'disciplina nao encontrada'}
-
-e o codigo de status 404
-'''
-@app.route('/aluno_de_disciplina/<int:id_aluno>/<int:id_disciplina>/', methods=['GET'])
-def estuda(id_aluno,id_disciplina):
-   return 'ola'
 
 '''
 Agora, vá para o arquivo acesso.py
