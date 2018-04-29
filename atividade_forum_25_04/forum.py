@@ -76,16 +76,15 @@ def get_texts(id_disciplina):
             if id_disciplina == forum['disciplina']:
                     if professor != '':
                             if(acesso.leciona(professor, id_disciplina)):
-                                    #copia.append(forum['textos'])
-                                    print(forum['textos'][0][0]['texto'])
-                                    return jsonify({'textos':forum['textos'], 'response': True})
+                                    participa = acesso.participantes(id_disciplina)['participantes']
+                                    return jsonify({'textos':forum['textos'], 'response': True, 'participantes': participa})
                             else:
                                     return jsonify({'response': False, 'textos':[]})
                     elif aluno != '':
-                            print(aluno)
                             if(acesso.eh_aluno(aluno, id_disciplina)):
                                     copia.append(forum['textos'])
-                                    return jsonify({'textos':forum['textos'], 'response': True})
+                                    participa = acesso.participantes(id_disciplina)['participantes']
+                                    return jsonify({'textos':forum['textos'], 'response': True, 'participantes': participa})
                             else:
                                     return jsonify({'response': False, 'textos':[]})
     return jsonify({'response': False, 'error': 'disciplina nao encontrada'})

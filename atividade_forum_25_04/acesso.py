@@ -36,6 +36,10 @@ def eh_aluno(id_aluno, id_disciplina):
         return r.json()['aluno'] == 'True'
     return False,'inexistente'
 
+def participantes(id_disciplina):
+    r = requests.get('http://localhost:5000/participantes/{}'.format(id_disciplina))
+    return r.json()
+
 
 '''
 Agora, de runtests.

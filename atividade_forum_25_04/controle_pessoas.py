@@ -135,5 +135,40 @@ def leciona(id_professor,id_disciplina):
 Agora, vá para o arquivo acesso.py
 '''
 
+@app.route('/participantes/<int:id_disciplina>', methods=['GET'])
+def participantes(id_disciplina):
+        #lista todos ira armazenar todos os IDs envolvidos (prof/aluno)
+        todos = []
+        lista_nomes = []
+        #iterando sob as disciplinas para localizar a disciplina localizada
+        for disciplina in disciplinas:
+                #disciplina localizada
+                if id_disciplina == disciplina['id_disciplina']:
+                        #adiciona IDs de alunos na lista todos
+                        for aluno in disciplina['alunos']:
+                                todos.append(aluno)
+                        #adiciona IDs de professores na lista todos
+                        for professor in disciplina['professores']:
+                                todos.append(professor)
+                        #compara o id da lista todos com o objeto professor e armazena o valor da chave 'nome' na lista_nomes
+                        for professor in professores:
+                                if professor['id_professor'] in todos:
+                                        lista_nomes.append(professor['nome'])
+                        #compara o id da lista todos com o objeto aluno e armazena o valor da chave 'nome' na lista_nomes
+                        for aluno in alunos:
+                                if aluno['id_aluno'] in todos:
+                                        lista_nomes.append(aluno['nome'])
+                                
+
+                        
+        print(lista_nomes)
+        return jsonify({'participantes': lista_nomes})
+
+
+
+
+
+
+
 if __name__ == '__main__':
    app.run(debug=True, host='0.0.0.0')
