@@ -1,0 +1,40 @@
+A idéia da aula de hoje:
+
+Usuários devem poder responder topicos no forum.
+Quando responderem, todas as pessoas envolvidas
+naquele topico recebem um email.
+
+Teremos 3 servidores:
+forum
+controle_pessoas -> sabe os emails e quem pode postar
+em cada disciplina
+mail -> sabe enviar email
+
+o ciclo sera o seguinte:
+1. Um usuário tenta criar uma mensagem
+2. Verificamos se ele pode (acessando controle_pessoas,
+com funcoes ja prontas do acesso.py)
+3. Se ok, forum.py manda uma lista de ids a serem notificadas
+para mail.py
+4. mail.py manda essa lista para controle_pessoas, que retorna
+uma lista de emails
+5. mail.py envia os emails
+
+
+O que fazer:
+
+1. Fazer o sugerido no controle_pessoas e no forum
+2. Fazer o mail.py funcionar, adicionando credenciais
+validas (ou seja, usando seu gmail ou criando 
+uma conta nova para isso)
+2.1 Voce provavelmente vai ter que autorizar o gmail
+a usar "aplicacoes inseguras". Voce pode mudar essa confi
+guracao de volta depois de usar.
+3. Fazer o sugerido no mail.py: transformar ele em
+servidor, e criar a chamada dele. Acessar o controle_pessoas
+a partir dele
+4. Alterar o forum, fazendo com que os usuários que participaram
+de um determinado topico sejam notificados por email da nova 
+mensagem
+
+Infelizmente nao temos runtests hoje, mas vou fazer o exercicio com voces no fim da aula. A atividade não é uma AC.
