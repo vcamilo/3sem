@@ -1,3 +1,9 @@
+from flask import Flask, jsonify, abort
+from flask import make_response, request, url_for
+import acesso
+
+app = Flask(__name__)
+
 '''
 Esse arquivo contém uma funcao de envio de email.
 
@@ -42,17 +48,25 @@ from email.message import EmailMessage
 server = smtplib.SMTP('smtp.gmail.com', 587)
 server.ehlo()
 server.starttls()
-server.login("nome_de_usuario", "senhafracapacas")
+server.login("testeemailflask", "SenhaSegura")
 '''
 Essa funcao é um exemplo simplificado, e deverá ser alterada
 '''
-def envia(destinatario):
-    msg = EmailMessage()
-    msg.set_content('teste teste')
-    msg['Subject'] = 'Esse é um teste de email'
-    msg['From'] = 'teste.distribuidos23@gmail.com'
-    msg['To'] = destinatario
-    server.send_message(msg)
 
-    #return server.sendmail('teste.distribuidos23',destinatario,msg)
+@app.route('/mail/enviar/<destinatario>', methods=['POST'])
+def envia(destinatario):
+    emails = request.get('to', None)
+    #emails = acesso.retorna_email()
+    msg = EmailMessage()
+    msg.set_content('Esse eh um teste de email, enviado depois das 22h15')
+    msg['Subject'] = 'Esse eh um teste de email'
+    msg['From'] = 'testeemailflask'
+    msg['To'] = "vic12hugo@hotmail.com"
+    server.send_message(msg)
+#    server.sendmail('testeemailflask',"vic12hugo@hotmail.com",msg.as_string())
+
+    return "Message sent"
+
+if __name__ == '__main__':
+    app.run(debug = True, host="0.0.0.0", port=5051)
 

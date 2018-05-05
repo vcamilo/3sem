@@ -36,6 +36,16 @@ def eh_aluno(id_aluno, id_disciplina):
         return r.json()['aluno'] == 'True'
     return False,'inexistente'
 
+#retorna emails dos alunos
+
+def retorna_email(listaAlunos):
+    lista = ','.join(map(str, listaAlunos))
+    url = 'http://localhost:5000/emails/?lista_ids='+lista
+    r = requests.get(url)
+    
+    return r.json()
+
+
 
 '''
 Agora, de runtests.

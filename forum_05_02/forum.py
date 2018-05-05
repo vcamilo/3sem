@@ -85,35 +85,42 @@ usando (e atualizando!) a variavel next_post
 Se nao puder, responderemos apropriadamente {'response':False,
 'error': erro_explicativo}
 '''
+def monta_dic(usuario, mensagem):
+  global next_post
+  next_post+=1
+  retorno = {}
+  retorno['usuario'] = int(usuario)
+  retorno['texto'] = mensagem
+  retorno['id_msg'] = next_post
+  return retorno
+  
+
 @app.route('/forum/responder/<int:id_msg>/', methods=['POST'])
 def responder(id_msg):
     professor = request.args.get('professor','')
     aluno = request.args.get('aluno','')
     mensagem = request.json.get('texto',None)
-    for disc in todo_forum:
-            print(disc)
-            for forum in disc['textos']:
-                    print('\n')
-                    
-
-            #forum['textos'][0].append({'usuario':20, 'texto':'this is ground control to major tom', 'id_msg':224})
-
-    
-
-    return jsonify(id_msg,professor, aluno, mensagem)
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if aluno == '' and professor == '':
+      return jsonify({'response': False, 'error': 'Insira aluno ou professor'})
+    for todo in todo_forum:
+      for texto in todo['textos']:
+        for comment in texto:
+          if comment['id_msg'] == id_msg:
+            if(professor != ''):
+              try:
+                if acesso.leciona(professor, todo['disciplina']):
+                  texto.append(monta_dic(professor, mensagem))
+                  return jsonify({'response': True, 'post_id': next_post})
+                if not acesso.leciona(professor, todo['disciplina']):
+                  return jsonify({'response': False, 'error': 'Professor nao existente'})
+              except:
+                return jsonify({'response': False, 'error': 'falha interna do servidor'}), 500
+            if(aluno != ''):
+              if acesso.eh_aluno(aluno, todo['disciplina']):
+                texto.append(monta_dic(aluno, mensagem))
+                return jsonify({'response': True, 'post_id': next_post})
+              if not acesso.eh_aluno(aluno, todo['disciplina']):
+                return jsonify({'response': False, 'error': 'Aluno nao existente'})
 
 
 
